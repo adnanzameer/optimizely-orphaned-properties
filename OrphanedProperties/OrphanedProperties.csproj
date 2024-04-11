@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+	<OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+	<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<OutputPath>bin\</OutputPath>
+	<PackageId>A2Z.OrphanedProperties</PackageId>
+	<Version>1.0.0.0</Version>
+	<Description>Plugin to identify and bulk delete orphaned or missing properties (missing from code) in Optimizely.</Description>
+	<Authors>Adnan Zameer</Authors>
+	<IsPackable>True</IsPackable>
+	<PackageReleaseNotes>https://github.com/adnanzameer/optimizely-orphaned-roperties/blob/master/CHANGELOG.md</PackageReleaseNotes>
+	<PackageProjectUrl>https://github.com/adnanzameer/optimizely-orphaned-properties</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/adnanzameer/optimizely-orphaned-properties</RepositoryUrl>
+	<RepositoryType>Git</RepositoryType>
+	<PackageTags>Optimizely Orphaned Missing Properties A2Z missingproperties orphanedproperties missingfromcode</PackageTags>
+	<NuspecFile>OrphanedProperties.nuspec</NuspecFile>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+	<Content Remove="module.config" />
+	<_ContentIncludedByDefault Remove="A2Z.OrphanedProperties.targets" />
+	<_ContentIncludedByDefault Remove="OrphanedProperties.nuspec" />
+	<_ContentIncludedByDefault Remove="OrphanedProperties.zip" />
+	<Content Include="readme.txt">
+	  <PackagePath>readme.txt</PackagePath>
+	</Content>
+  </ItemGroup>
+  <ItemGroup>
+	<EmbeddedResource Include="EmbeddedLangFiles\Plugins_en.xml" />
+	<None Include="module.config" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="EPiServer.CMS.UI.Core" Version="12.4.0" />
+  </ItemGroup>
+</Project>

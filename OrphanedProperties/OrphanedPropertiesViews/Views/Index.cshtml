@@ -1,0 +1,318 @@
+﻿@using EPiServer.Shell
+@using EPiServer.Shell.Web.Mvc.Html
+@using EPiServer.Framework.Web.Resources
+@using OrphanedProperties.ViewModels
+@using EPiServer.Framework.Localization
+@using EPiServer.Shell.Navigation
+
+@model OrphanedPropertiesViewModels
+
+@{
+    Layout = string.Empty;
+    var adminModuleCss = Paths.ToClientResource("EPiServer.Cms.UI.Admin", "clientResources/dist/admin.bundle.css");
+    var styleCss = Paths.ToClientResource(typeof(OrphanedPropertiesViewModels), "ClientResources/Styles/style.css");
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+    <title>@LocalizationService.Current.GetString("/plugins/orphanedproperties/displayname")</title>
+
+    <!-- Admin CSS -->
+    <link href="@adminModuleCss" type="text/css" rel="stylesheet" />
+
+    <!-- Shell -->
+    @ClientResources.RenderResources("ShellCore")
+
+    <!-- LightTheme -->
+    @ClientResources.RenderResources("ShellCoreLightTheme")
+    
+    <link href="@styleCss" type="text/css" rel="stylesheet" />
+
+    <script type="text/javascript">
+
+        function selectionChanged(element) {
+            buttonState();
+        }
+
+        function checkAll(ele) {
+            var checkboxes = document.getElementsByClassName('checkbox');
+            if (ele.checked) {
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].type === 'checkbox') {
+                        checkboxes[i].checked = true;
+                    }
+                }
+            } else {
+                for (var j = 0; j < checkboxes.length; j++) {
+                    if (checkboxes[j].type === 'checkbox') {
+                        checkboxes[j].checked = false;
+                    }
+                }
+            }
+
+            buttonState();
+        }
+
+        function buttonState() {
+            var disableButton = true;
+
+            var checkboxes = document.getElementsByClassName('checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type === 'checkbox' && checkboxes[i].checked && checkboxes[i].id !== 'chk') {
+
+                    disableButton = false;
+                }
+            }
+
+            var button = document.getElementById('btnDelete');
+            button.disabled = disableButton;
+
+            if (disableButton) {
+                document.getElementById('chk').checked = false;
+            }
+        }
+
+        function buttonClick() {
+
+            disabledControls();
+
+            let text = '@Html.Translate("/plugins/orphanedproperties/confirmation")' + '\n\n';
+
+            var checkboxes = document.getElementsByClassName('checkbox');
+            var list = '';
+            var count = 1;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type === 'checkbox' && checkboxes[i].checked && checkboxes[i].id !== 'chk') {
+
+                    var name = checkboxes[i].getAttribute("name");
+                    list = list + name + ',';
+
+                    text = text + count + '. ' + document.getElementById('txt-' + name).value + '\n'
+                    count = count + 1;
+                }
+            }
+
+            if (confirm(text) == true) {
+
+                const data = {
+                    value: list
+                };
+
+                var typePropApiWithId = "/OrphanedProperties/Delete";
+                fetch(typePropApiWithId, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+
+                        if (!data.status) {
+                            alert('ERROR \n\n' + data.message);
+                        } else {
+                            alert('STATUS \n\n' + data.message);
+                        }
+
+                        var currentUrl = window.location.href;
+                        var baseUrl = currentUrl.split('?')[0];
+                        history.replaceState(null, '', baseUrl);
+                        location.reload();
+
+                    })
+                    .catch((error) => {
+                        alert(error);
+                        enabledControls();
+                    });
+            } else {
+                enabledControls();
+            }
+        }
+
+        function disabledControls() {
+
+            var div = document.querySelector('.content-area-container');
+
+            // Disable checkboxes and buttons
+            var inputs = div.querySelectorAll('input[type=checkbox], button');
+            inputs.forEach(function (input) {
+                input.disabled = true;
+            });
+
+            // "Disable" anchor links
+            var links = div.querySelectorAll('a');
+            links.forEach(function (link) {
+                link.classList.add('disabled-link'); // Add class to make it look disabled
+                link.removeAttribute('href'); // Remove the href attribute to disable navigation
+            });
+
+            document.getElementById('loader').style.display = 'inline-block';
+        }
+
+        function enabledControls() {
+            var div = document.querySelector('.content-area-container');
+
+            // Enable checkboxes and buttons
+            var inputs = div.querySelectorAll('input[type=checkbox], button');
+            inputs.forEach(function (input) {
+                input.disabled = false;
+            });
+
+            // Enable anchor links
+            var links = div.querySelectorAll('a');
+            links.forEach(function (link) {
+                link.classList.remove('disabled-link');
+                link.classList.add('active-link'); // Reapply active style if you had one
+                link.setAttribute('href', 'https://example.com'); // You might need a more dynamic way to restore original hrefs if they vary
+            });
+
+            document.getElementById('loader').style.display = 'none';
+        }
+    </script>
+</head>
+<body class="epi-orphanedProperties">
+    @Html.CreatePlatformNavigationMenu()
+    <div @Html.ApplyPlatformNavigation() style="height: calc(100vh - 40px);">
+        <div class="content-area-container">
+            <div class="axiom-layout-grid-container content-types-container">
+                <div class="axiom-layout-grid">
+                    <div class="axiom-layout-grid__cell axiom-layout-grid__cell--span-4-small axiom-layout-grid__cell--span-8-medium axiom-layout-grid__cell--span-12-large axiom-layout-grid__cell--span-12-xlarge">
+                        <div class="axiom-grid-container content-types-list">
+                            <div class="epi-padding">
+
+                                <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                    <div class="axiom-grid-container soft-double--top soft-quad--sides" style="padding-bottom: 0;">
+                                        <div class="axiom-grid">
+                                            <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                                <div class="epi-main-header">
+                                                    <h1 class="epi-uif-typography mdc-typography--headline1">@Html.Translate("/plugins/orphanedproperties/displayName")</h1>
+                                                </div>
+                                            </div>
+                                            <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                                <p class="epi-uif-typography mdc-typography--body1">
+                                                    @Html.Translate("/plugins/orphanedproperties/description")
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="epi-paddingVertical-small" id="divMainArea">
+                                    <div id="divContentInstances">
+
+                                        <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                            <div class="axiom-grid-container soft-double--top soft-quad--sides">
+                                                <div class="axiom-grid">
+                                                    <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                                        <span id="spnContentInstancesSuggestion">@Html.Raw(string.Format(Html.Translate("/plugins/orphanedproperties/contentInstanceSuggestions").ToString() ?? string.Empty, Model.TotalItemsCount))</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (Model.OrphanedProperties.Any())
+                                        {
+                                            <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large content-table">
+                                                <table data-oui-component="true" class="oui-table oui-table--rule oui-table--loose" style="table-layout: fixed; width:80%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>@Html.Translate("/plugins/orphanedproperties/typename")</th>
+                                                            <th style="width:100px">@Html.Translate("/plugins/orphanedproperties/type")</th>
+                                                            <th>@Html.Translate("/plugins/orphanedproperties/propertyname")</th>
+                                                            <th style="width:70px; text-align:right;">
+                                                                @Html.Translate("/plugins/orphanedproperties/delete")
+                                                                <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @foreach (var result in Model.OrphanedProperties)
+                                                        {
+                                                            <tr>
+                                                                <td><a href="/EPiServer/EPiServer.Cms.UI.Admin/default#/ContentTypes/edit-content-type/@result.TypeId" target="_blank">@result.TypeName</a></td>
+
+                                                                @if (result.IsBlockType)
+                                                                {
+                                                                    <td>Block</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>Page</td>
+                                                                }
+
+                                                                <td>@result.PropertyName</td>
+                                                                <td>
+                                                                    @Html.CheckBox(result.PropertyId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })
+                                                                    <input type="hidden" id="txt-@result.PropertyId" value="@result.Summary" />
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                                <br />
+                                                <div class="axiom-grid__cell axiom-grid__cell--span-2-small axiom-grid__cell--span-12-medium axiom-grid__cell--span-12-large axiom-grid__cell--span-12-xlarge create-new" style="width:80%">
+                                                    <button id="btnDelete" onclick="buttonClick()" disabled class="mdc-ripple-upgraded epi-uif-text-button mdc-button mdc-button--unelevated" style="--mdc-ripple-fg-size: 61px; --mdc-ripple-fg-scale: 1.954074437558767; --mdc-ripple-fg-translate-start: 11.5px, -19.5px; --mdc-ripple-fg-translate-end: 21.046875px, -12.5px;">
+                                                        <div class="mdc-button__ripple"></div>
+                                                        <span class="mdc-button__label">@Html.Translate("/plugins/orphanedproperties/delete")</span>
+                                                        <div class="loader" id="loader"> </div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                @if (Model.OrphanedProperties.Any())
+                                {
+                                    <br />
+                                    <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large" style="float: left">
+                                        <div class="axiom-grid-container soft-double--top soft-quad--sides">
+                                            <div class="axiom-grid">
+                                                <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                                    <nav class="oui-pagination-controls" data-test-section="">
+                                                        <div class=" axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-4-medium axiom-grid__cell--span-4-large">
+                                                            @string.Format(Html.Translate("/plugins/orphanedproperties/itemsCount").ToString() ?? string.Empty, Model.MinIndexOfItem, Model.MaxIndexOfItem, Model.TotalItemsCount) &nbsp; &nbsp; &nbsp; &nbsp;
+                                                        </div>
+
+                                                        <ul class="flex flex-justified--center flex-align--center">
+                                                            <li class="push--sides @(Model.PageNumber > 1 ? "" : "disabled")">
+                                                                <a class="page-link" href="@Model.PageUrl(Model.PageNumber - 1)" aria-label="Previous">
+                                                                    <span aria-hidden="true">Previous</span>
+                                                                </a>
+                                                            </li>
+
+                                                            @foreach (var i in Model.Pages)
+                                                            {
+                                                                if (i == 0)
+                                                                {
+                                                                    <li>&nbsp; <span data-feather="more-horizontal"></span> &nbsp;</li>
+                                                                    continue;
+                                                                }
+
+                                                                <li class="push--sides  @(i == Model.PageNumber ? "active" : "")"><a class="page-link" href="@Model.PageUrl(i)">@i</a></li>
+                                                            }
+
+                                                            <li class="push--sides @(Model.PageNumber < Model.TotalPagesCount ? "" : "disabled")">
+                                                                <a class="page-link" href="@Model.PageUrl(Model.PageNumber + 1)" aria-label="Next">
+                                                                    <span aria-hidden="true">Next</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </nav>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+﻿.epi-orphanedProperties b, strong {
+    font-weight: 700 !important;
+}
+
+.epi-orphanedProperties .disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.epi-orphanedProperties .disabled-link {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.epi-orphanedProperties .disabled a {
+    color: grey;
+}
+
+.epi-orphanedProperties .active {
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.epi-orphanedProperties .loader {
+    display: none;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid blue;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
