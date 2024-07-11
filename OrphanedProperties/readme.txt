@@ -3,4 +3,4 @@
 
 USAGE
 ============
-To access the add-on, go to Admin -> Orphaned Properties
+To access the add-on, go to Settings (Admin) -> Orphaned Properties
