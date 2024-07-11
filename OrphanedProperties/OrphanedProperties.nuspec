@@ -2,7 +2,7 @@
 <package >
   <metadata>
 	<id>A2Z.OrphanedProperties</id>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<title>Orphaned Properties</title>
 	<icon>icon.png</icon>
 	<authors>Adnan Zameer</authors>

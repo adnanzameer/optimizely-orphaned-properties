@@ -76,7 +76,7 @@ namespace OrphanedProperties.Helpers
                             var writable = propertyDefinition.CreateWritableClone();
                             _propertyDefinitionRepository.Delete(writable);
                             result.Status = "Good";
-                            result.Description = string.Format(LocalizationService.Current.GetString("/plugins/orphanedproperties/successdelete"), propertyDefinition.Name + " (" + propertyDefinition.Type.Name + ")");
+                            result.Description = $"SUCCESS: {propertyDefinition.Name + " (" + propertyDefinition.Type.Name + ")"} was successfully deleted.";
                         }
                         catch (Exception ex)
                         {
@@ -87,19 +87,19 @@ namespace OrphanedProperties.Helpers
                     else
                     {
                         result.Status = "Error";
-                        result.Description = string.Format(LocalizationService.Current.GetString("/plugins/orphanedproperties/errordelete"), propertyDefinition.Name + " (" + propertyDefinition.Type.Name + ")");
+                        result.Description = $"ERROR: {propertyDefinition.Name + " (" + propertyDefinition.Type.Name + ")"} is not an orphan property.";
                     }
                 }
                 else
                 {
                     result.Status = "Error";
-                    result.Description = string.Format(LocalizationService.Current.GetString("/plugins/orphanedproperties/propertynull"), propertyId);
+                    result.Description = $"ERROR: Property {propertyId} is null.";
                 }
             }
             else
             {
                 result.Status = "Error";
-                result.Description =LocalizationService.Current.GetString("/plugins/orphanedproperties/propertyvaluezero");
+                result.Description = "ERROR: Property value is 0.";
             }
             return result;
         }

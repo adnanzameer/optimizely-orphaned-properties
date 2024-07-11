@@ -16,7 +16,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
 <head>
-    <title>@LocalizationService.Current.GetString("/plugins/orphanedproperties/displayname")</title>
+    <title>Orphaned Properties</title>
 
     <!-- Admin CSS -->
     <link href="@adminModuleCss" type="text/css" rel="stylesheet" />
@@ -77,7 +77,7 @@
 
             disabledControls();
 
-            let text = '@Html.Translate("/plugins/orphanedproperties/confirmation")' + '\n\n';
+            let text = 'Do you really want to delete the following properties?' + '\n\n';
 
             var checkboxes = document.getElementsByClassName('checkbox');
             var list = '';
@@ -187,12 +187,12 @@
                                         <div class="axiom-grid">
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
                                                 <div class="epi-main-header">
-                                                    <h1 class="epi-uif-typography mdc-typography--headline1">@Html.Translate("/plugins/orphanedproperties/displayName")</h1>
+                                                    <h1 class="epi-uif-typography mdc-typography--headline1">Orphaned Properties</h1>
                                                 </div>
                                             </div>
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
                                                 <p class="epi-uif-typography mdc-typography--body1">
-                                                    @Html.Translate("/plugins/orphanedproperties/description")
+                                                    This plugin is designed to identify and eliminate any orphaned or missing properties within Optimizely that do not originate from the code.&lt;br/&gt; It's important to note that properties associated with Optimizely Forms are not affected by this plugin
                                                 </p>
                                             </div>
                                         </div>
@@ -206,7 +206,7 @@
                                             <div class="axiom-grid-container soft-double--top soft-quad--sides">
                                                 <div class="axiom-grid">
                                                     <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
-                                                        <span id="spnContentInstancesSuggestion">@Html.Raw(string.Format(Html.Translate("/plugins/orphanedproperties/contentInstanceSuggestions").ToString() ?? string.Empty, Model.TotalItemsCount))</span>
+                                                        <span id="spnContentInstancesSuggestion">@Html.Raw($"There are currently <strong>{Model.TotalItemsCount}</strong> orphaned properties across content types.")</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -217,11 +217,11 @@
                                                 <table data-oui-component="true" class="oui-table oui-table--rule oui-table--loose" style="table-layout: fixed; width:80%">
                                                     <thead>
                                                         <tr>
-                                                            <th>@Html.Translate("/plugins/orphanedproperties/typename")</th>
-                                                            <th style="width:100px">@Html.Translate("/plugins/orphanedproperties/type")</th>
-                                                            <th>@Html.Translate("/plugins/orphanedproperties/propertyname")</th>
+                                                            <th>Type Name</th>
+                                                            <th style="width:100px">Type</th>
+                                                            <th>Property Name</th>
                                                             <th style="width:70px; text-align:right;">
-                                                                @Html.Translate("/plugins/orphanedproperties/delete")
+                                                                Delete
                                                                 <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
                                                             </th>
                                                         </tr>
@@ -257,7 +257,7 @@
                                                 <div class="axiom-grid__cell axiom-grid__cell--span-2-small axiom-grid__cell--span-12-medium axiom-grid__cell--span-12-large axiom-grid__cell--span-12-xlarge create-new" style="width:80%">
                                                     <button id="btnDelete" onclick="buttonClick()" disabled class="mdc-ripple-upgraded epi-uif-text-button mdc-button mdc-button--unelevated" style="--mdc-ripple-fg-size: 61px; --mdc-ripple-fg-scale: 1.954074437558767; --mdc-ripple-fg-translate-start: 11.5px, -19.5px; --mdc-ripple-fg-translate-end: 21.046875px, -12.5px;">
                                                         <div class="mdc-button__ripple"></div>
-                                                        <span class="mdc-button__label">@Html.Translate("/plugins/orphanedproperties/delete")</span>
+                                                        <span class="mdc-button__label">Delete</span>
                                                         <div class="loader" id="loader"> </div>
                                                     </button>
                                                 </div>
@@ -274,7 +274,7 @@
                                                 <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
                                                     <nav class="oui-pagination-controls" data-test-section="">
                                                         <div class=" axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-4-medium axiom-grid__cell--span-4-large">
-                                                            @string.Format(Html.Translate("/plugins/orphanedproperties/itemsCount").ToString() ?? string.Empty, Model.MinIndexOfItem, Model.MaxIndexOfItem, Model.TotalItemsCount) &nbsp; &nbsp; &nbsp; &nbsp;
+                                                            @($"Displaying items {Model.MinIndexOfItem}-{Model.MaxIndexOfItem} of {Model.TotalItemsCount}") &nbsp; &nbsp; &nbsp; &nbsp;
                                                         </div>
 
                                                         <ul class="flex flex-justified--center flex-align--center">
