@@ -1,7 +1,4 @@
 # A2Z.OrphanedProperties
-The **A2Z.OrphanedProperties** is a freely available module. If you find it beneficial, you can show your support by treating me to a coffee on [Ko-fi](https://ko-fi.com/U7U2STV29):
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U7U2STV29)
 
 ## Description
 [![Platform](https://img.shields.io/badge/Platform-.NET%205-green.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
