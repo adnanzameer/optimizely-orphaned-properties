@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
-using EPiServer.Framework.Localization;
 using OrphanedProperties.Models;
 using PropertyDefinition = EPiServer.DataAbstraction.PropertyDefinition;
 

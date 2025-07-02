@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OrphanedProperties.Models
+﻿namespace OrphanedProperties.Models
 {
     public class DeletePropertyResponse
     {
