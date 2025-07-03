@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
-using EPiServer.Framework.Localization;
 using OrphanedProperties.Models;
 using PropertyDefinition = EPiServer.DataAbstraction.PropertyDefinition;
 
@@ -25,31 +24,53 @@ namespace OrphanedProperties.Helpers
 
         public IList<OrphanedPropertyResult> GetMissingProperties()
         {
-            var pageProperties = from type in _contentTypeRepository.List()
-                                 from property in type.PropertyDefinitions.Where(property => IsMissingModelProperty(property) && !type.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase))
-                                 select new OrphanedPropertyResult
-                                 {
-                                     TypeName = type.LocalizedName,
-                                     PropertyName = property.Name,
-                                     PropertyId = property.ID,
-                                     TypeId = type.ID,
-                                     IsBlockType = IsContentTypeBlockType(type),
-                                     Summary = $"{property.Name} (Type: {type.LocalizedName})"
-                                 };
+            var pageProperties = new List<OrphanedPropertyResult>();
+            var excludedPrefixes = new[] { "episerver.", "seoboost.", "geta.", "a2z.", "AdvancedTaskManager." };
+
+            foreach (var type in _contentTypeRepository.List())
+            {
+                var modelType = type.ModelTypeString;
+                if (!string.IsNullOrWhiteSpace(modelType) && excludedPrefixes.Any(p => modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    continue;
+                }
+
+                pageProperties.AddRange(type.PropertyDefinitions.Where(IsMissingModelProperty)
+                .Select(property => new OrphanedPropertyResult
+                {
+                    TypeName = type.LocalizedName,
+                    PropertyName = property.Name,
+                    PropertyId = property.ID,
+                    TypeId = type.ID,
+                    IsBlockType = IsContentTypeBlockType(type),
+                    Summary = $"{property.Name} (Type: {type.LocalizedName})"
+                }));
+            }
 
             return pageProperties.OrderBy(x => x.TypeName).ToList();
         }
 
         private bool IsMissingModelProperty(PropertyDefinition propertyDefinition)
         {
-            return propertyDefinition != null
-                   && !propertyDefinition.ExistsOnModel
-                   && _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null
-                   && !propertyDefinition.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase)
-                   && !propertyDefinition.Type.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase);
+            if (propertyDefinition == null)
+            {
+                return false;
+            }
+
+            if (propertyDefinition.ExistsOnModel)
+            {
+                return false;
+            }
+
+            if (propertyDefinition.Name.StartsWith("atm_", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
+
+            return _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null;
         }
 
-        private bool IsContentTypeBlockType(ContentType contentType)
+        private static bool IsContentTypeBlockType(ContentType contentType)
         {
             // Exclude local blocks (block property on pages) if the current content type is a block type.
             var modelType = Type.GetType(contentType.ModelTypeString);

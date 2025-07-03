@@ -1,8 +1,6 @@
 ﻿@using EPiServer.Shell
-@using EPiServer.Shell.Web.Mvc.Html
 @using EPiServer.Framework.Web.Resources
 @using OrphanedProperties.ViewModels
-@using EPiServer.Framework.Localization
 @using EPiServer.Shell.Navigation
 
 @model OrphanedPropertiesViewModels
@@ -192,7 +190,10 @@
                                             </div>
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
                                                 <p class="epi-uif-typography mdc-typography--body1">
-                                                    This plugin is designed to identify and eliminate any orphaned or missing properties within Optimizely that do not originate from the code.&lt;br/&gt; It's important to note that properties associated with Optimizely Forms are not affected by this plugin
+                                                    The plugin identifies and removes any orphaned or missing properties in Content Types that do not originate from the codebase.
+                                                </p>
+                                                <p class="epi-uif-typography mdc-typography--body2">
+                                                    Note that properties within the Optimizely/Episerver namespace are not impacted by this plugin.
                                                 </p>
                                             </div>
                                         </div>
