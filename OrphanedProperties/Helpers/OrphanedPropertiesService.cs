@@ -25,12 +25,12 @@ namespace OrphanedProperties.Helpers
         public IList<OrphanedPropertyResult> GetMissingProperties()
         {
             var pageProperties = new List<OrphanedPropertyResult>();
-            var excludedPrefixes = new[] { "episerver.", "seoboost.", "geta.", "a2z." , "AdvancedTaskManager." };
+            var excludedPrefixes = new[] { "episerver.", "seoboost.", "geta.", "a2z.", "AdvancedTaskManager." };
 
             foreach (var type in _contentTypeRepository.List())
             {
                 var modelType = type.ModelTypeString;
-                if (excludedPrefixes.Any(p => modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
+                if (!string.IsNullOrWhiteSpace(modelType) && excludedPrefixes.Any(p => modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     continue;
                 }
@@ -52,10 +52,22 @@ namespace OrphanedProperties.Helpers
 
         private bool IsMissingModelProperty(PropertyDefinition propertyDefinition)
         {
-            return propertyDefinition != null
-                   && !propertyDefinition.ExistsOnModel
-                   && _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID,
-                       propertyDefinition) == null;
+            if (propertyDefinition == null)
+            {
+                return false;
+            }
+
+            if (propertyDefinition.ExistsOnModel)
+            {
+                return false;
+            }
+
+            if (propertyDefinition.Name.StartsWith("atm_", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
+
+            return _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null;
         }
 
         private static bool IsContentTypeBlockType(ContentType contentType)
