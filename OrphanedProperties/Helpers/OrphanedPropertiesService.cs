@@ -24,17 +24,28 @@ namespace OrphanedProperties.Helpers
 
         public IList<OrphanedPropertyResult> GetMissingProperties()
         {
-            var pageProperties = from type in _contentTypeRepository.List()
-                                 from property in type.PropertyDefinitions.Where(property => IsMissingModelProperty(property) && !type.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase))
-                                 select new OrphanedPropertyResult
-                                 {
-                                     TypeName = type.LocalizedName,
-                                     PropertyName = property.Name,
-                                     PropertyId = property.ID,
-                                     TypeId = type.ID,
-                                     IsBlockType = IsContentTypeBlockType(type),
-                                     Summary = $"{property.Name} (Type: {type.LocalizedName})"
-                                 };
+            var pageProperties = new List<OrphanedPropertyResult>();
+            var excludedPrefixes = new[] { "episerver.", "seoboost.", "geta.", "a2z." , "AdvancedTaskManager." };
+
+            foreach (var type in _contentTypeRepository.List())
+            {
+                var modelType = type.ModelTypeString;
+                if (excludedPrefixes.Any(p => modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    continue;
+                }
+
+                pageProperties.AddRange(type.PropertyDefinitions.Where(IsMissingModelProperty)
+                .Select(property => new OrphanedPropertyResult
+                {
+                    TypeName = type.LocalizedName,
+                    PropertyName = property.Name,
+                    PropertyId = property.ID,
+                    TypeId = type.ID,
+                    IsBlockType = IsContentTypeBlockType(type),
+                    Summary = $"{property.Name} (Type: {type.LocalizedName})"
+                }));
+            }
 
             return pageProperties.OrderBy(x => x.TypeName).ToList();
         }
@@ -43,12 +54,11 @@ namespace OrphanedProperties.Helpers
         {
             return propertyDefinition != null
                    && !propertyDefinition.ExistsOnModel
-                   && _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null
-                   && !propertyDefinition.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase)
-                   && !propertyDefinition.Type.Name.StartsWith("form", StringComparison.InvariantCultureIgnoreCase);
+                   && _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID,
+                       propertyDefinition) == null;
         }
 
-        private bool IsContentTypeBlockType(ContentType contentType)
+        private static bool IsContentTypeBlockType(ContentType contentType)
         {
             // Exclude local blocks (block property on pages) if the current content type is a block type.
             var modelType = Type.GetType(contentType.ModelTypeString);
