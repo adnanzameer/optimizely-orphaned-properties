@@ -10,3 +10,6 @@
 ## Changes in version 2.0.0
 - Updated for .NET Core 7, 8, and 9 support.
 - Refined the logic to locate orphaned properties
+
+## Changes in version 2.0.1
+- Revert the framework support back to .NET Core 6 only.
