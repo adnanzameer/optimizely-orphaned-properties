@@ -1,0 +1,76 @@
+@model IPageViewModel<SitePageData>
+
+@*Helper used as template for a page in the bread crumb, recursively triggering the rendering of the next page*@
+
+@{
+    HelperResult ItemTemplate(HtmlHelpers.MenuItem breadCrumbItem)
+    {
+        if (breadCrumbItem.Selected)
+        {
+            if (breadCrumbItem.Page.HasTemplate() && !breadCrumbItem.Page.ContentLink.CompareToIgnoreWorkID(Model.CurrentPage.ContentLink))
+            {
+                <li class="breadcrumb-item">
+                    @Html.PageLink(breadCrumbItem.Page)
+                </li>
+            }
+            else
+            {
+                <li class="breadcrumb-item active" aria-current="page">
+                    @breadCrumbItem.Page.PageName
+                </li>
+            }
+
+            if (!breadCrumbItem.Page.ContentLink.CompareToIgnoreWorkID(Model.CurrentPage.ContentLink))
+            {
+                @Html.MenuList(breadCrumbItem.Page.ContentLink, ItemTemplate)
+            }
+        }
+
+        return new HelperResult(_ => Task.CompletedTask);
+    }
+
+    var breadCrumbList = SeoBoost.Extensions.BreadcrumbExtensions.GetBreadcrumbItemList(Model.CurrentPage);
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb d-none d-lg-flex">
+        <li class="breadcrumb-item">
+            @Html.ContentLink(SiteDefinition.Current.StartPage)
+        </li>
+        @Html.MenuList(SiteDefinition.Current.StartPage, ItemTemplate, requireVisibleInMenu: false, requirePageTemplate: false)
+    </ol>
+</nav>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb d-none d-lg-flex">
+        @{
+            foreach (var item in breadCrumbList)
+            {
+                if (item.Selected)
+                {
+                    <li class="breadcrumb-item active">
+                        <span itemprop="name">@item.PageData.PageName</span>
+                        <meta content="@item.Position" itemprop="position">
+                    </li>
+                }
+                else if (item.PageData.HasTemplate() && !item.PageData.ContentLink.CompareToIgnoreWorkID(Model.CurrentPage.ContentLink))
+                {
+                    <li class="breadcrumb-item">
+                        <a href="@Url.ContentUrl(item.PageData.ContentLink)" itemprop="item" itemscope itemtype="http://schema.org/Thing">
+                            <span itemprop="name">@item.PageData.PageName</span>
+                        </a>
+                        <meta content="@item.Position" itemprop="position">
+                    </li>
+                }
+                else //OPTIONAL
+                {
+                    <li class="breadcrumb-item">
+                        <span itemprop="name">@item.PageData.PageName</span>
+                        <meta content="@item.Position" itemprop="position">
+                    </li>
+                }
+                // <span class="divider">/</span>
+            }
+        }
+    </ol>
+</nav>
