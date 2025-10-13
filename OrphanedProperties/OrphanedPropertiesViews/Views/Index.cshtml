@@ -24,7 +24,7 @@
 
     <!-- LightTheme -->
     @ClientResources.RenderResources("ShellCoreLightTheme")
-    
+
     <link href="@styleCss" type="text/css" rel="stylesheet" />
 
     <script type="text/javascript">
@@ -171,6 +171,7 @@
     </script>
 </head>
 <body class="epi-orphanedProperties">
+    @Html.AntiForgeryToken()
     @Html.CreatePlatformNavigationMenu()
     <div @Html.ApplyPlatformNavigation() style="height: calc(100vh - 40px);">
         <div class="content-area-container">
@@ -217,40 +218,40 @@
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large content-table">
                                                 <table data-oui-component="true" class="oui-table oui-table--rule oui-table--loose" style="table-layout: fixed; width:80%">
                                                     <thead>
-                                                        <tr>
-                                                            <th>Type Name</th>
-                                                            <th style="width:100px">Type</th>
-                                                            <th>Property Name</th>
-                                                            <th style="width:70px; text-align:right;">
-                                                                Delete
-                                                                <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
-                                                            </th>
-                                                        </tr>
+                                                    <tr>
+                                                        <th>Type Name</th>
+                                                        <th style="width:100px">Type</th>
+                                                        <th>Property Name</th>
+                                                        <th style="width:70px; text-align:right;">
+                                                            Delete
+                                                            <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
+                                                        </th>
+                                                    </tr>
                                                     </thead>
                                                     <tbody>
 
-                                                        @foreach (var result in Model.OrphanedProperties)
-                                                        {
-                                                            <tr>
-                                                                <td><a href="/EPiServer/EPiServer.Cms.UI.Admin/default#/ContentTypes/edit-content-type/@result.TypeId" target="_blank">@result.TypeName</a></td>
+                                                    @foreach (var result in Model.OrphanedProperties)
+                                                    {
+                                                        <tr>
+                                                            <td><a href="/EPiServer/EPiServer.Cms.UI.Admin/default#/ContentTypes/edit-content-type/@result.TypeId" target="_blank">@result.TypeName</a></td>
 
-                                                                @if (result.IsBlockType)
-                                                                {
-                                                                    <td>Block</td>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <td>Page</td>
-                                                                }
+                                                            @if (result.IsBlockType)
+                                                            {
+                                                                <td>Block</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>Page</td>
+                                                            }
 
-                                                                <td>@result.PropertyName</td>
-                                                                <td>
-                                                                    @Html.CheckBox(result.PropertyId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })
-                                                                    <input type="hidden" id="txt-@result.PropertyId" value="@result.Summary" />
-                                                                </td>
+                                                            <td>@result.PropertyName</td>
+                                                            <td>
+                                                                @Html.CheckBox(result.PropertyId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })
+                                                                <input type="hidden" id="txt-@result.PropertyId" value="@result.Summary" />
+                                                            </td>
 
-                                                            </tr>
-                                                        }
+                                                        </tr>
+                                                    }
 
                                                     </tbody>
                                                 </table>
@@ -315,5 +316,6 @@
             </div>
         </div>
     </div>
+    <required-client-resources area="Footer" />
 </body>
 </html>
