@@ -3,7 +3,6 @@ using EPiServer.Cms.Shell;
 using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Scheduler;
 using EPiServer.Web.Routing;
-using SeoBoost.Business.Configuration;
 
 namespace Alloy;
 
@@ -34,15 +33,6 @@ public class Startup
 
         // Required by Wangkanai.Detection
         services.AddDetection();
-        
-        services.AddSeoBoost(x =>
-        {
-            x.CustomCanonicalTagFieldName = "CanonicalTag"; // Default fa
-            x.UseSimpleAddressAsPath = true; // Default false
-            x.EnableRobotsTxtSupport = true; // Default false
-            x.UseMirrorPageReference = true; // Default false
-            x.UseSiteUrlAsHost = true; // Default false
-        });
 
         services.AddSession(options =>
         {

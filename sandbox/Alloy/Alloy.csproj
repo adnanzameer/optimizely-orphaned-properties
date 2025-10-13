@@ -37,6 +37,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SeoBoost\SeoBoost.csproj" />
+    <ProjectReference Include="..\..\OrphanedProperties\OrphanedProperties.csproj" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 @using EPiServer.Framework.Web.Mvc.Html
-@using SeoBoost.Extensions
 
 @model IPageViewModel<SitePageData>
 
@@ -22,12 +21,6 @@
     @Html.CanonicalLink()
     @Html.AlternateLinks()
     <!-- End Episerver -->
-    
-
-    <!-- SEOBOOST -->
-    @Html.GetCanonicalLink()
-    @Html.GetAlternateLinks()
-    <!-- END SEOBOOST -->
 
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.min.css" />
