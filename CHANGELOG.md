@@ -1,5 +1,11 @@
 # Changelog
 
+## Changes in version 2.0.3
+- Fixed an exception thrown when retrieving contentType.ModelTypeString.
+- Improved the logic used when deleting properties.
+- General code quality improvements.
+- Added table column sorting support.
+
 ## Changes in version 2.0.2
 - Added anti-forgery token and footer client resources to fix failed Optimizely AJAX calls in custom plugin pages. (Thanks to @huerpfse)
 

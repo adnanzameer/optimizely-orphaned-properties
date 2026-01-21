@@ -168,6 +168,45 @@
 
             document.getElementById('loader').style.display = 'none';
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.querySelector(".oui-table");
+            const headers = table.querySelectorAll("th");
+            const tbody = table.querySelector("tbody");
+
+            headers.forEach((header, index) => {
+                // Skip the Delete column
+                if (header.textContent.trim() === "Delete") return;
+
+                header.style.cursor = "pointer";
+                header.setAttribute("title", "Click to sort");
+
+                header.addEventListener("click", () => {
+                    const isAscending = header.classList.toggle("sort-asc");
+                    header.classList.toggle("sort-desc", !isAscending);
+
+                    // Remove sort classes from other headers
+                    headers.forEach(h => {
+                        if (h !== header) h.classList.remove("sort-asc", "sort-desc");
+                    });
+
+                    const rows = Array.from(tbody.querySelectorAll("tr"));
+                    const direction = isAscending ? 1 : -1;
+
+                    rows.sort((rowA, rowB) => {
+                        const cellA = rowA.children[index].textContent.trim().toLowerCase();
+                        const cellB = rowB.children[index].textContent.trim().toLowerCase();
+
+                        if (cellA < cellB) return -1 * direction;
+                        if (cellA > cellB) return 1 * direction;
+                        return 0;
+                    });
+
+                    // Rebuild tbody
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+        });
     </script>
 </head>
 <body class="epi-orphanedProperties">
@@ -218,40 +257,33 @@
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large content-table">
                                                 <table data-oui-component="true" class="oui-table oui-table--rule oui-table--loose" style="table-layout: fixed; width:80%">
                                                     <thead>
-                                                    <tr>
-                                                        <th>Type Name</th>
-                                                        <th style="width:100px">Type</th>
-                                                        <th>Property Name</th>
-                                                        <th style="width:70px; text-align:right;">
-                                                            Delete
-                                                            <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
-                                                        </th>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Type Name</th>
+                                                            <th style="width:100px">Type</th>
+                                                            <th>Property Name</th>
+                                                            <th style="width:70px; text-align:right;">
+                                                                Delete
+                                                                <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" />
+                                                            </th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
 
-                                                    @foreach (var result in Model.OrphanedProperties)
-                                                    {
-                                                        <tr>
-                                                            <td><a href="/EPiServer/EPiServer.Cms.UI.Admin/default#/ContentTypes/edit-content-type/@result.TypeId" target="_blank">@result.TypeName</a></td>
+                                                        @foreach (var result in Model.OrphanedProperties)
+                                                        {
+                                                            <tr>
+                                                                <td><a href="/EPiServer/EPiServer.Cms.UI.Admin/default#/ContentTypes/edit-content-type/@result.TypeId" target="_blank">@result.TypeName</a></td>
 
-                                                            @if (result.IsBlockType)
-                                                            {
-                                                                <td>Block</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>Page</td>
-                                                            }
+                                                                <td>@result.Category</td>
 
-                                                            <td>@result.PropertyName</td>
-                                                            <td>
-                                                                @Html.CheckBox(result.PropertyId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })
-                                                                <input type="hidden" id="txt-@result.PropertyId" value="@result.Summary" />
-                                                            </td>
+                                                                <td>@result.PropertyName</td>
+                                                                <td>
+                                                                    @Html.CheckBox(result.PropertyId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })
+                                                                    <input type="hidden" id="txt-@result.PropertyId" value="@result.Summary" />
+                                                                </td>
 
-                                                        </tr>
-                                                    }
+                                                            </tr>
+                                                        }
 
                                                     </tbody>
                                                 </table>

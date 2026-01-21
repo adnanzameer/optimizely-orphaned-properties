@@ -2,7 +2,7 @@
 <package >
   <metadata>
 	<id>A2Z.OrphanedProperties</id>
-	<version>2.0.2</version>
+	<version>2.0.3</version>
 	<title>Orphaned Properties</title>
 	<icon>icon.png</icon>
 	<iconUrl>https://raw.githubusercontent.com/adnanzameer/optimizely-orphaned-properties/master/OrphanedProperties/icon.png</iconUrl>
