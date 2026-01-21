@@ -7,7 +7,7 @@
         public string PropertyName { get; set; }
         public bool IsBlockType { get; set; }
         public int PropertyId { get; set; }
-
         public string Summary { get; set; }
+        public string Category { get; set; }
     }
 }
