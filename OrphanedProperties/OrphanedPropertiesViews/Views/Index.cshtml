@@ -9,6 +9,11 @@
     Layout = string.Empty;
     var adminModuleCss = Paths.ToClientResource("EPiServer.Cms.UI.Admin", "clientResources/dist/admin.bundle.css");
     var styleCss = Paths.ToClientResource(typeof(OrphanedPropertiesViewModels), "ClientResources/Styles/style.css");
+    var showFormProperties =
+        string.Equals(
+            Context.Request.Query["showFormProperties"],
+            "true",
+            StringComparison.OrdinalIgnoreCase);
 }
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
@@ -207,6 +212,19 @@
                 });
             });
         });
+
+         function toggleFormProperties() {
+            const url = new URL(window.location.href);
+
+            // Reset paging
+            url.searchParams.delete("page");
+
+            // Toggle flag
+            const checkbox = document.getElementById("chkShowFormProperties");
+            url.searchParams.set("showFormProperties", checkbox.checked);
+
+            window.location.href = url.toString();
+        }
     </script>
 </head>
 <body class="epi-orphanedProperties">
@@ -230,7 +248,7 @@
                                             </div>
                                             <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
                                                 <p class="epi-uif-typography mdc-typography--body1">
-                                                    The plugin identifies and removes any orphaned or missing properties in Content Types that do not originate from the codebase.
+                                                    tThe plugin identifies and removes any orphaned or missing properties in Content Types that do not originate from the codebase.
                                                 </p>
                                                 <p class="epi-uif-typography mdc-typography--body2">
                                                     Note that properties within the Optimizely/Episerver namespace are not impacted by this plugin.
@@ -250,6 +268,22 @@
                                                         <span id="spnContentInstancesSuggestion">@Html.Raw($"There are currently <strong>{Model.TotalItemsCount}</strong> orphaned properties across content types.")</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="axiom-grid-container soft-double--top soft-quad--sides">
+                                                <div class="axiom-grid">
+                                                    <div class="axiom-grid__cell axiom-grid__cell--span-4-small axiom-grid__cell--span-8-medium axiom-grid__cell--span-12-large">
+                                                        <div style="margin-top:10px;">
+                                                            <label class="epi-uif-typography mdc-typography--body2">
+                                                                <input type="checkbox"
+                                                                       id="chkShowFormProperties"
+                                                                       @(showFormProperties ? "checked" : "")
+                                                                       onchange="toggleFormProperties()" />
+                                                                Show Optimizely Form Properties
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                         @if (Model.OrphanedProperties.Any())

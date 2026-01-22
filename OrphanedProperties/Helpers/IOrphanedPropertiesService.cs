@@ -5,7 +5,7 @@ namespace OrphanedProperties.Helpers
 {
     public interface IOrphanedPropertiesService
     {
-        IList<OrphanedPropertyResult> GetMissingProperties();
+        IList<OrphanedPropertyResult> GetMissingProperties(bool showFormProperties);
         DeletePropertyResponse ProcessProperty(int propertyId);
     }
 }

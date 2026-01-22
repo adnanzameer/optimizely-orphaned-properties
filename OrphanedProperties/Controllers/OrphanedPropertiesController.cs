@@ -22,7 +22,7 @@ namespace OrphanedProperties.Controllers
         }
 
         [Route("[action]")]
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page, bool showFormProperties = false)
         {
             var model = new OrphanedPropertiesViewModels
             {
@@ -31,7 +31,7 @@ namespace OrphanedProperties.Controllers
                 PageNumber = page != null && page.Value != 0 ? page.Value : 1
             };
 
-            var orphanedPropertyResults = _missingPropertiesService.GetMissingProperties();
+            var orphanedPropertyResults = _missingPropertiesService.GetMissingProperties(showFormProperties);
             model.TotalItemsCount = orphanedPropertyResults.Count;
             var skip = (model.PageNumber - 1) * model.PageSize;
             var propertyResults = orphanedPropertyResults.Skip(skip).Take(model.PageSize).ToList();
@@ -46,7 +46,7 @@ namespace OrphanedProperties.Controllers
         {
             try
             {
-                var orphanedPropertyResults = _missingPropertiesService.GetMissingProperties();
+                var orphanedPropertyResults = _missingPropertiesService.GetMissingProperties(true);
 
                 var orphanedPropertyIds = new HashSet<int>(orphanedPropertyResults.Select(x => x.PropertyId));
 

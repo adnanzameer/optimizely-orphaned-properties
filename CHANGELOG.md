@@ -1,5 +1,18 @@
 # Changelog
 
+## Changes in version 2.0.4
+
+### Added
+- Added a UI toggle to show or hide Optimizely Forms properties in the Orphaned Properties admin view.
+- Introduced automatic categorization of all Optimizely Forms related properties under a new `Form` category.
+- Added support for detecting inherited and custom Form Container blocks without requiring the Optimizely Forms package to be installed.
+- Enabled query string based state management (`showFormProperties`) with automatic pagination reset when toggled.
+
+### Changed
+- Refactored orphan detection logic to keep model validation and UI filtering concerns separate.
+- Improved Forms property detection using content type signatures and system property markers rather than direct type references.
+- Updated results sorting to group and display FORM category entries consistently.
+
 ## Changes in version 2.0.3
 - Fixed an exception thrown when retrieving contentType.ModelTypeString.
 - Improved the logic used when deleting properties.

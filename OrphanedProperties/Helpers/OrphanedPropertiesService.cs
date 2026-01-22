@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using OrphanedProperties.Models;
 using PropertyDefinition = EPiServer.DataAbstraction.PropertyDefinition;
@@ -24,48 +23,137 @@ namespace OrphanedProperties.Helpers
             _contentTypeRepository = contentTypeRepository;
         }
 
-        public IList<OrphanedPropertyResult> GetMissingProperties()
+        public IList<OrphanedPropertyResult> GetMissingProperties(bool showFormProperties)
         {
             var results = new List<OrphanedPropertyResult>();
-            var excludedPrefixes = new[] { "episerver.", "seoboost.", "geta.", "a2z.", "AdvancedTaskManager." };
+            var excludedPrefixes = new[]
+            {
+                "episerver.",
+                "seoboost.",
+                "geta.",
+                "a2z.",
+                "AdvancedTaskManager."
+            };
 
             foreach (var type in _contentTypeRepository.List())
             {
                 var modelType = type.ModelTypeString;
                 if (!string.IsNullOrWhiteSpace(modelType) &&
-                    excludedPrefixes.Any(p => modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
+                    excludedPrefixes.Any(p =>
+                        modelType.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     continue;
                 }
 
-                var category = GetContentTypeCategory(type);
+                var defaultCategory = GetContentTypeCategory(type);
 
-                foreach (var property in type.PropertyDefinitions.Where(IsMissingModelProperty))
+                var properties = type.PropertyDefinitions
+                    .Where(IsMissingModelProperty);
+
+                if (!showFormProperties)
                 {
+                    properties = properties
+                        .Where(p => !IsFormsSystemProperty(p));
+                }
+
+                foreach (var property in properties)
+                {
+                    var isFormsProperty = IsFormsSystemProperty(property);
+
                     results.Add(new OrphanedPropertyResult
                     {
                         TypeName = type.LocalizedName,
                         PropertyName = property.Name,
                         PropertyId = property.ID,
                         TypeId = type.ID,
-                        IsBlockType = category.Equals("Block", StringComparison.OrdinalIgnoreCase),
+                        IsBlockType = defaultCategory.Equals(
+                            "Block",
+                            StringComparison.OrdinalIgnoreCase),
+
                         Summary = $"{property.Name} (Type: {type.LocalizedName})",
-                        Category = category // new optional property if you want to display this in the view
+
+                        // 🔑 force Forms category
+                        Category = isFormsProperty
+                            ? "Form"
+                            : defaultCategory
                     });
                 }
             }
 
-            return results.OrderBy(x => x.TypeName).ToList();
+            return results
+                .OrderBy(x => x.Category)
+                .ThenBy(x => x.TypeName)
+                .ToList();
         }
+
 
         private bool IsMissingModelProperty(PropertyDefinition propertyDefinition)
         {
-            if (propertyDefinition == null) return false;
-            if (propertyDefinition.ExistsOnModel) return false;
-            if (propertyDefinition.Name.StartsWith("atm_", StringComparison.InvariantCultureIgnoreCase)) return false;
+            if (propertyDefinition == null)
+                return false;
 
-            return _contentTypeModelRepository.GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null;
+            if (propertyDefinition.ExistsOnModel)
+                return false;
+
+            if (propertyDefinition.Name.StartsWith(
+                    "atm_",
+                    StringComparison.InvariantCultureIgnoreCase))
+                return false;
+
+            return _contentTypeModelRepository
+                .GetPropertyModel(propertyDefinition.ContentTypeID, propertyDefinition) == null;
         }
+
+        private bool IsFormsSystemProperty(PropertyDefinition propertyDefinition)
+        {
+            if (propertyDefinition == null)
+                return false;
+
+            var contentType = _contentTypeRepository.Load(propertyDefinition.ContentTypeID);
+            if (contentType == null)
+                return false;
+
+            var modelType = contentType.ModelTypeString;
+            var propertyName = propertyDefinition.Name;
+
+            // 1. Any Optimizely Forms content type
+            if (!string.IsNullOrWhiteSpace(modelType) &&
+                modelType.StartsWith("EPiServer.Forms", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+
+            // 2. FormContainerBlock and any derived container
+            if (!string.IsNullOrWhiteSpace(modelType) &&
+                modelType.Contains("FormContainerBlock", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+
+            // 3. Custom Form Containers detected by system property set
+            if (contentType.Base == ContentTypeBase.Block)
+            {
+                var propertyNames = contentType.PropertyDefinitions
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.InvariantCultureIgnoreCase);
+
+                if (propertyNames.Contains("Form__Elements") &&
+                    propertyNames.Contains("Form__Settings") &&
+                    propertyNames.Contains("Form__Language"))
+                {
+                    return true;
+                }
+            }
+
+            // 4. Forms technical property prefixes
+            return !string.IsNullOrWhiteSpace(propertyName) && (propertyName.StartsWith("Form_", StringComparison.InvariantCultureIgnoreCase) ||
+                                                                propertyName.StartsWith("Forms_", StringComparison.InvariantCultureIgnoreCase) ||
+                                                                propertyName.StartsWith("Element_", StringComparison.InvariantCultureIgnoreCase) ||
+                                                                propertyName.StartsWith("System_", StringComparison.InvariantCultureIgnoreCase) ||
+                                                                propertyName.StartsWith("Visitor_", StringComparison.InvariantCultureIgnoreCase) ||
+                                                                propertyName.StartsWith("Submission_", StringComparison.InvariantCultureIgnoreCase));
+        }
+
 
         private static string GetContentTypeCategory(ContentType contentType)
         {
