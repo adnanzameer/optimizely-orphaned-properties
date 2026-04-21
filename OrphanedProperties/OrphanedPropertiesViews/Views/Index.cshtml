@@ -7,7 +7,6 @@
 
 @{
     Layout = string.Empty;
-    var adminModuleCss = Paths.ToClientResource("EPiServer.Cms.UI.Admin", "clientResources/dist/admin.bundle.css");
     var styleCss = Paths.ToClientResource(typeof(OrphanedPropertiesViewModels), "ClientResources/Styles/style.css");
     var showFormProperties =
         string.Equals(
@@ -22,7 +21,7 @@
     <title>Orphaned Properties</title>
 
     <!-- Admin CSS -->
-    <link href="@adminModuleCss" type="text/css" rel="stylesheet" />
+    <link href="/Optimizely/Settings/13.0.0/ClientResources/dist/admin.bundle.css" type="text/css" rel="stylesheet" />
 
     <!-- Shell -->
     @ClientResources.RenderResources("ShellCore")
