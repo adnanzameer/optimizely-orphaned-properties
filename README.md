@@ -1,13 +1,11 @@
 # A2Z.OrphanedProperties
 
+## Optimizely CMS 12?
+**For ASP.NET 5+ and Episerver/Optimizely 12+ see CMS12 Branch: https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12**
+
 ## Description
-[![Platform](https://img.shields.io/badge/Platform-.NET%205-green.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
-[![Platform](https://img.shields.io/badge/Platform-.NET%206-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
-[![Platform](https://img.shields.io/badge/Platform-.NET%207-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
-[![Platform](https://img.shields.io/badge/Platform-.NET%208-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
-[![Platform](https://img.shields.io/badge/Platform-.NET%209-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
-[![Platform](https://img.shields.io/badge/Optimizely-%2012-blue.svg?style=flat)](http://world.episerver.com/cms/)
-[![Platform](https://img.shields.io/badge/EPiServer-%2012-orange.svg?style=flat)](http://world.episerver.com/cms/)
+[![Platform](https://img.shields.io/badge/Platform-.NET%2010-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
+[![Platform](https://img.shields.io/badge/Optimizely-%2012-orange.svg?style=flat)](http://world.optimizely.com/cms/)
 
 This Optimizely CMS plugin enables Administrators to identify and bulk delete any orphaned or missing properties (missing from code).
 

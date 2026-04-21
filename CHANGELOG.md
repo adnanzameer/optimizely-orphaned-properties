@@ -1,5 +1,8 @@
 # Changelog
 
+## Changes in version 3.0.0
+- Updated for .NET 10 and Optimizely CMS 13 support.
+
 ## Changes in version 2.0.4
 
 ### Added
