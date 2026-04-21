@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using EPiServer.DataAbstraction;
+using EPiServer.DataAbstraction.RuntimeModel;
+using EPiServer.Framework.Localization;
 using OrphanedProperties.Models;
 using PropertyDefinition = EPiServer.DataAbstraction.PropertyDefinition;
 
@@ -9,18 +11,21 @@ namespace OrphanedProperties.Helpers
 {
     public class OrphanedPropertiesService : IOrphanedPropertiesService
     {
-        private readonly ContentTypeModelRepository _contentTypeModelRepository;
+        private readonly IContentTypeModelRepository _contentTypeModelRepository;
         private readonly IPropertyDefinitionRepository _propertyDefinitionRepository;
         private readonly IContentTypeRepository _contentTypeRepository;
+        private readonly LocalizationService _localizationService;
 
         public OrphanedPropertiesService(
-            ContentTypeModelRepository contentTypeModelRepository,
+            IContentTypeModelRepository contentTypeModelRepository,
             IPropertyDefinitionRepository propertyDefinitionRepository,
-            IContentTypeRepository contentTypeRepository)
+            IContentTypeRepository contentTypeRepository,
+            LocalizationService localizationService)
         {
             _contentTypeModelRepository = contentTypeModelRepository;
             _propertyDefinitionRepository = propertyDefinitionRepository;
             _contentTypeRepository = contentTypeRepository;
+            _localizationService = localizationService;
         }
 
         public IList<OrphanedPropertyResult> GetMissingProperties(bool showFormProperties)
@@ -62,7 +67,7 @@ namespace OrphanedProperties.Helpers
 
                     results.Add(new OrphanedPropertyResult
                     {
-                        TypeName = type.LocalizedName,
+                        TypeName = _localizationService.GetContentTypeName(type),
                         PropertyName = property.Name,
                         PropertyId = property.ID,
                         TypeId = type.ID,
@@ -70,7 +75,7 @@ namespace OrphanedProperties.Helpers
                             "Block",
                             StringComparison.OrdinalIgnoreCase),
 
-                        Summary = $"{property.Name} (Type: {type.LocalizedName})",
+                        Summary = $"{property.Name} (Type: {_localizationService.GetContentTypeName(type)})",
 
                         // 🔑 force Forms category
                         Category = isFormsProperty
@@ -214,8 +219,17 @@ namespace OrphanedProperties.Helpers
 
             try
             {
-                var writable = propertyDefinition.CreateWritableClone();
-                _propertyDefinitionRepository.Delete(writable);
+                var contentType = _contentTypeRepository.Load(propertyDefinition.ContentTypeID);
+                var writableContentType = contentType.CreateWritableClone() as ContentType;
+                var writableProperty = writableContentType.PropertyDefinitions
+                    .FirstOrDefault(p => p.ID == propertyId);
+
+                if (writableProperty != null)
+                {
+                    writableContentType.PropertyDefinitions.Remove(writableProperty);
+                }
+
+                _contentTypeRepository.Save(writableContentType);
                 result.Status = "Good";
                 result.Description = $"SUCCESS: {propertyDefinition.Name} ({propertyDefinition.Type.Name}) was successfully deleted.";
             }

@@ -1,7 +1,7 @@
 ﻿@using EPiServer.Shell
 @using EPiServer.Framework.Web.Resources
 @using OrphanedProperties.ViewModels
-@using EPiServer.Shell.Navigation
+@addTagHelper *, EPiServer.Shell.UI
 
 @model OrphanedPropertiesViewModels
 
@@ -229,8 +229,8 @@
 </head>
 <body class="epi-orphanedProperties">
     @Html.AntiForgeryToken()
-    @Html.CreatePlatformNavigationMenu()
-    <div @Html.ApplyPlatformNavigation() style="height: calc(100vh - 40px);">
+    <platform-navigation />
+    <div style="height: calc(100vh - 40px); padding-top: 56px;">
         <div class="content-area-container">
             <div class="axiom-layout-grid-container content-types-container">
                 <div class="axiom-layout-grid">
