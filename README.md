@@ -1,8 +1,5 @@
 # A2Z.OrphanedProperties
 
-## Optimizely CMS 12?
-**For ASP.NET 5+ and Episerver/Optimizely 12+ see CMS12 Branch: https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12**
-
 ## Description
 [![Platform](https://img.shields.io/badge/Platform-.NET%2010-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
 [![Platform](https://img.shields.io/badge/Optimizely-%2012-orange.svg?style=flat)](http://world.optimizely.com/cms/)
@@ -29,6 +26,15 @@ To access the add-on, go to Admin -> Orphaned Properties
 
 ![Orphaned Properties](img/missing-from-code-properties.png)
 
+## Sandbox App
+Sandbox application is testing poligon for package new features and bug fixes.
+
+**ADMIN**
+
+Username: **sysadmin**
+
+Password: **Sandbox##123**
+
 ## Contributing
 
 Feel free to submit a pull request if you identify any areas that could be enhanced or improved.
@@ -38,6 +44,10 @@ Feel free to submit a pull request if you identify any areas that could be enhan
 If you have new ideas or feature requests that can make this tool even more useful for you or the community, please feel free to open a new issue at the following link.
 
 https://github.com/adnanzameer/optimizely-orphaned-properties/issues
+
+## Optimizely (Episerver) CMS 12 Support
+
+For users still on Optimizely (Episerver) CMS 12, SEOBOOST is available on: [https://github.com/adnanzameer/optimizely-seoboost/tree/CMS12](https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12)
 
 ## Changelog
 
