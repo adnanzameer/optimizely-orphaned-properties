@@ -1,8 +1,5 @@
 # A2Z.OrphanedProperties
 
-## Optimizely CMS 12?
-**For ASP.NET 5+ and Episerver/Optimizely 12+ see CMS12 Branch: https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12**
-
 ## Description
 [![Platform](https://img.shields.io/badge/Platform-.NET%2010-blue.svg?style=flat)](https://docs.microsoft.com/en-us/dotnet/)
 [![Platform](https://img.shields.io/badge/Optimizely-%2012-orange.svg?style=flat)](http://world.optimizely.com/cms/)
@@ -50,7 +47,7 @@ https://github.com/adnanzameer/optimizely-orphaned-properties/issues
 
 ## Optimizely (Episerver) CMS 12 Support
 
-For users still on Optimizely (Episerver) CMS 12, SEOBOOST is available on: https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12
+For users still on Optimizely (Episerver) CMS 12, SEOBOOST is available on: [https://github.com/adnanzameer/optimizely-seoboost/tree/CMS12](https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12)
 
 ## Changelog
 
