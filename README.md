@@ -29,6 +29,15 @@ To access the add-on, go to Admin -> Orphaned Properties
 
 ![Orphaned Properties](img/missing-from-code-properties.png)
 
+## Sandbox App
+Sandbox application is testing poligon for package new features and bug fixes.
+
+**ADMIN**
+
+Username: **sysadmin**
+
+Password: **Sandbox##123**
+
 ## Contributing
 
 Feel free to submit a pull request if you identify any areas that could be enhanced or improved.
@@ -38,6 +47,10 @@ Feel free to submit a pull request if you identify any areas that could be enhan
 If you have new ideas or feature requests that can make this tool even more useful for you or the community, please feel free to open a new issue at the following link.
 
 https://github.com/adnanzameer/optimizely-orphaned-properties/issues
+
+## Optimizely (Episerver) CMS 12 Support
+
+For users still on Optimizely (Episerver) CMS 12, SEOBOOST is available on: https://github.com/adnanzameer/optimizely-orphaned-properties/tree/CMS12
 
 ## Changelog
 
